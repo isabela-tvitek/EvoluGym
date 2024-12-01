@@ -1,17 +1,21 @@
+import 'package:evolugym/screens/add_exercise_screen.dart';
 import 'package:evolugym/screens/exercises_screen.dart';
 import 'package:evolugym/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class AppRoutes {
   static const String homeRoute = '/';
-  static const String segundaRoute = '/exercicios';
+  static const String exercisesRoute = '/exercicios';
+  static const String addExerciseRoute = '/add-exercicio';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case homeRoute:
         return MaterialPageRoute(builder: (_) => HomeScreen());
-      case segundaRoute:
+      case exercisesRoute:
         return MaterialPageRoute(builder: (_) => ExercisesScreen());
+      case addExerciseRoute:
+        return MaterialPageRoute(builder: (_) => AddExerciseScreen());
       default:
         return MaterialPageRoute(builder: (_) {
           return Scaffold(

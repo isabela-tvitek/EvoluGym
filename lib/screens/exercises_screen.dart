@@ -1,37 +1,80 @@
 import 'package:flutter/material.dart';
-import 'package:evolugym/routes/app_routes.dart';
+import '../services/exercise_service.dart';
+import '../models/exercise.dart';
+import '../routes/app_routes.dart';
 
-class ExercisesScreen extends StatelessWidget {
+class ExercisesScreen extends StatefulWidget {
+  @override
+  _ExercisesScreenState createState() => _ExercisesScreenState();
+}
+
+class _ExercisesScreenState extends State<ExercisesScreen> {
+  final ExerciseService _exerciseService = ExerciseService();
+  late Future<List<Exercise>> _exerciseList;
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshExerciseList();
+  }
+
+  void _refreshExerciseList() {
+    setState(() {
+      _exerciseList = _exerciseService.getAllExercises(); // Atualiza a lista
+    });
+  }
+
+  void _deleteExercise(int id) async {
+    await _exerciseService.deleteExercise(id);
+    _refreshExerciseList(); // Atualiza após deletar
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.segundaRoute);
+      appBar: AppBar(
+        title: Text('Exercícios'),
+      ),
+      body: FutureBuilder<List<Exercise>>(
+        future: _exerciseList,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Erro ao carregar exercícios: ${snapshot.error}'));
+          } else if (snapshot.hasData) {
+            final exercises = snapshot.data!;
+            if (exercises.isEmpty) {
+              return Center(child: Text('Nenhum exercício cadastrado.'));
+            } else {
+              return ListView.builder(
+                itemCount: exercises.length,
+                itemBuilder: (context, index) {
+                  final exercise = exercises[index];
+                  return ListTile(
+                    title: Text(exercise.name),
+                    subtitle: Text('Tipo: ${exercise.type}'),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red),
+                      onPressed: () => _deleteExercise(exercise.id!),
+                    ),
+                  );
                 },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white, backgroundColor: const Color(0xFF24BE9A),
-                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  textStyle: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                child: const Text('Entrar'),
-              ),
-            ],
-          ),
-        ),
+              );
+            }
+          } else {
+            return Center(child: Text('Nenhum dado disponível.'));
+          }
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, AppRoutes.addExerciseRoute).then((value) {
+            if (value == true) _refreshExerciseList();
+          });
+        },
+        backgroundColor: const Color(0xFF24BE9A),
+        child: Icon(Icons.add, color: Colors.white, size: 30),
       ),
     );
   }
