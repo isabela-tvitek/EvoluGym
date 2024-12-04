@@ -11,6 +11,9 @@ abstract class ApiService {
   @GET("/exercises") 
   Future<List<Exercise>> getExercises();
 
+  @GET("/exercises/{id}") // Nova rota para buscar exercício pelo ID
+  Future<Exercise> getExerciseById(@Path("id") int id);
+
   @POST("/exercises")
   Future<void> addExercise(@Body() Exercise exercise); // Adicionando exercício
 

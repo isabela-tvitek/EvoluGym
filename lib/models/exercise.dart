@@ -1,22 +1,17 @@
+import 'package:evolugym/models/exercise_detail.dart';
+
 class Exercise {
-  final int? id;
+  final int? id; 
   final String name;
   final String type;
-  final bool completed;
 
-  Exercise({
-    this.id,
-    required this.name,
-    required this.type,
-    this.completed = false,
-  });
+  Exercise({required this.id, required this.name, required this.type});
 
   factory Exercise.fromJson(Map<String, dynamic> json) {
     return Exercise(
-      id: json['id'],
-      name: json['name'],
-      type: json['type'],
-      completed: json['completed'] ?? false,
+      id: json['id'] ?? 0,
+      name: json['name'] ?? 'Desconhecido',
+      type: json['type'] ?? 'Tipo não especificado',
     );
   }
 
@@ -24,7 +19,6 @@ class Exercise {
     return {
       'name': name,
       'type': type,
-      'completed': completed,
     };
   }
 }

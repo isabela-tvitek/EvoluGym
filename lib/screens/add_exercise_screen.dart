@@ -32,40 +32,45 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
   }
 
   Future<void> _saveExercise() async {
-    final name = _nameController.text.trim();
-    final type = _selectedType;
+  final name = _nameController.text.trim();
+  final type = _selectedType;
 
-    if (name.isEmpty || type == null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Preencha todos os campos')));
-      return;
-    }
-
-    setState(() {
-      _isSaving = true;
-    });
-
-    try {
-      if (widget.exercise == null) {
-        final newExercise = Exercise(name: name, type: type);
-        await _exerciseService.addExercise(newExercise);
-      } else {
-        final updatedExercise = Exercise(
-          id: widget.exercise!.id,
-          name: name,
-          type: type,
-        );
-        await _exerciseService.updateExercise(widget.exercise!.id!, updatedExercise);
-      }
-
-      Navigator.pop(context, true);
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro ao salvar exercício: $e')));
-    } finally {
-      setState(() {
-        _isSaving = false;
-      });
-    }
+  if (name.isEmpty || type == null) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Preencha todos os campos')));
+    return;
   }
+
+  setState(() {
+    _isSaving = true;
+  });
+
+  try {
+    if (widget.exercise == null) {
+      final newExercise = Exercise(
+        id: null,
+        name: name,
+        type: type,
+      );
+      await _exerciseService.addExercise(newExercise);
+    } else {
+      final updatedExercise = Exercise(
+        id: widget.exercise!.id,
+        name: name,
+        type: type,
+      );
+      await _exerciseService.updateExercise(widget.exercise!.id!, updatedExercise);
+    }
+
+    Navigator.pop(context, true);
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro ao salvar exercício: $e')));
+  } finally {
+    setState(() {
+      _isSaving = false;
+    });
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
