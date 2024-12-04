@@ -10,7 +10,7 @@ class ExercisesScreen extends StatefulWidget {
 }
 
 class _ExercisesScreenState extends State<ExercisesScreen> {
-  final ExerciseService _exerciseService = ExerciseService(Dio()); 
+  final ExerciseService _exerciseService = ExerciseService(Dio());
   List<Exercise> _exercises = [];
   bool _isLoading = true;
 
@@ -40,7 +40,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
     return Scaffold(
       appBar: AppBar(title: Text('Exercícios')),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator()) 
+          ? Center(child: CircularProgressIndicator())
           : ListView.builder(
               itemCount: _exercises.length,
               itemBuilder: (context, index) {
@@ -48,30 +48,41 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
                 return ListTile(
                   title: Text(exercise.name),
                   subtitle: Text(exercise.type),
-                  trailing: IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () async {
-                      await _exerciseService.deleteExercise(exercise.id!); 
-                      _loadExercises(); 
-                    },
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AddExerciseScreen(exercise: exercise),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.edit),
+                        color: Colors.green,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AddExerciseScreen(exercise: exercise),
+                            ),
+                          ).then((_) => _loadExercises());
+                        },
                       ),
-                    ).then((_) => _loadExercises()); // Atualiza a lista quando voltar da tela de edição
-                  },
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        color: Colors.red,
+                        onPressed: () async {
+                          await _exerciseService.deleteExercise(exercise.id!);
+                          _loadExercises();
+                        },
+                      ),
+                    ],
+                  ),
                 );
               },
             ),
       floatingActionButton: FloatingActionButton(
+        foregroundColor: Colors.white, backgroundColor: const Color(0xFF24BE9A),
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AddExerciseScreen()), 
-          ).then((_) => _loadExercises()); // Atualiza a lista após adicionar
+            MaterialPageRoute(builder: (context) => AddExerciseScreen()),
+          ).then((_) => _loadExercises());
         },
         child: Icon(Icons.add),
       ),

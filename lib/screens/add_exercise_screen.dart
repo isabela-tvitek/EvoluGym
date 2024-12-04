@@ -4,7 +4,7 @@ import 'package:evolugym/services/exercise_service.dart';
 import 'package:dio/dio.dart';
 
 class AddExerciseScreen extends StatefulWidget {
-  final Exercise? exercise;  // Pode ser nulo se for um novo exercício
+  final Exercise? exercise;
 
   AddExerciseScreen({this.exercise});
 
@@ -14,12 +14,11 @@ class AddExerciseScreen extends StatefulWidget {
 
 class _AddExerciseScreenState extends State<AddExerciseScreen> {
   final _nameController = TextEditingController();
-  String? _selectedType;  // Para armazenar o tipo selecionado
+  String? _selectedType;
   bool _isSaving = false;
 
   final ExerciseService _exerciseService = ExerciseService(Dio());
 
-  // Lista de tipos de exercício
   final List<String> _types = ["Inferiores", "Superiores", "Abdômen", "Cardio"];
 
   @override
@@ -27,9 +26,8 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
     super.initState();
 
     if (widget.exercise != null) {
-      // Se for um exercício para editar, preenche os campos com os dados existentes
       _nameController.text = widget.exercise!.name;
-      _selectedType = widget.exercise!.type; // Preenche o tipo
+      _selectedType = widget.exercise!.type;
     }
   }
 
@@ -48,16 +46,18 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
 
     try {
       if (widget.exercise == null) {
-        // Adicionar um novo exercício
         final newExercise = Exercise(name: name, type: type);
         await _exerciseService.addExercise(newExercise);
       } else {
-        // Editar um exercício existente
-        final updatedExercise = Exercise(id: widget.exercise!.id, name: name, type: type);
-        await _exerciseService.updateExercise(widget.exercise!.id!, updatedExercise); // Certifique-se de usar um ID não nulo
+        final updatedExercise = Exercise(
+          id: widget.exercise!.id,
+          name: name,
+          type: type,
+        );
+        await _exerciseService.updateExercise(widget.exercise!.id!, updatedExercise);
       }
 
-      Navigator.pop(context, true); // Volta para a tela anterior indicando sucesso
+      Navigator.pop(context, true);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro ao salvar exercício: $e')));
     } finally {
@@ -76,35 +76,54 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextField(
               controller: _nameController,
               decoration: InputDecoration(labelText: 'Nome do Exercício'),
             ),
             SizedBox(height: 20),
-            // Dropdown para selecionar o tipo de exercício
-            DropdownButton<String>(
-              value: _selectedType,
-              hint: Text("Selecione o Tipo de Exercício"),
-              onChanged: (String? newValue) {
-                setState(() {
-                  _selectedType = newValue;
-                });
-              },
-              items: _types.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
+            InputDecorator(
+              decoration: InputDecoration(
+                labelText: "Tipo de Exercício",
+                border: OutlineInputBorder(),
+              ),
+              child: DropdownButton<String>(
+                value: _selectedType,
+                hint: Text("Selecione o Tipo de Exercício"),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedType = newValue;
+                  });
+                },
+                items: _types.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _isSaving ? null : _saveExercise,
-              child: _isSaving
-                  ? CircularProgressIndicator(color: Colors.white)
-                  : Text(widget.exercise == null ? 'Adicionar' : 'Salvar'),
+            Spacer(),
+            Align(
+              alignment: Alignment.center,
+              child: ElevatedButton(
+                onPressed: _isSaving ? null : _saveExercise,
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white, backgroundColor: const Color(0xFF24BE9A),
+                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  textStyle: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                child: _isSaving
+                    ? CircularProgressIndicator(color: Colors.white)
+                    : Text(widget.exercise == null ? 'Adicionar' : 'Salvar'),
+              ),
             ),
           ],
         ),

@@ -5,7 +5,6 @@ import 'package:evolugym/services/exercise_service.dart';
 import 'package:evolugym/routes/app_routes.dart';
 
 void main() {
-  // Configuração do Dio
   final dio = Dio();
   
   runApp(MyApp(dio: dio));
@@ -20,7 +19,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        // Passando a instância de Dio para o ExerciseService
         Provider(create: (_) => ExerciseService(dio)),
       ],
       child: MaterialApp(

@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:evolugym/models/exercise.dart';
 
-part 'api_service.g.dart'; // Geração do código Retrofit
+part 'api_service.g.dart';
 
 @RestApi(baseUrl: "http://192.168.1.109:3000") // URL da sua API local
 abstract class ApiService {

@@ -7,7 +7,6 @@ class ExerciseService {
 
   ExerciseService(Dio dio) : _apiService = ApiService(dio);
 
-  // Método para pegar todos os exercícios
   Future<List<Exercise>> getAllExercises() async {
     try {
       final exercises = await _apiService.getExercises();
@@ -17,7 +16,6 @@ class ExerciseService {
     }
   }
 
-  // Método para adicionar um novo exercício
   Future<void> addExercise(Exercise exercise) async {
     try {
       await _apiService.addExercise(exercise);
@@ -26,7 +24,6 @@ class ExerciseService {
     }
   }
 
-  // Método para editar um exercício
   Future<void> updateExercise(int id, Exercise exercise) async {
     try {
       await _apiService.editExercise(id, exercise);
@@ -35,7 +32,6 @@ class ExerciseService {
     }
   }
 
-  // Método para deletar um exercício
   Future<void> deleteExercise(int id) async {
     try {
       await _apiService.deleteExercise(id);
