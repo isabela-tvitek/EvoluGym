@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:evolugym/models/exercise.dart';
 import 'package:evolugym/models/exercise_record.dart';
 import 'package:evolugym/screens/add_exercise_record_screen.dart';
+import 'package:evolugym/screens/exercise_record_detail_screen.dart'; // Novo import
 import 'package:evolugym/services/exercise_record_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -58,6 +59,15 @@ class _ExerciseRecordScreenState extends State<ExerciseRecordScreen> {
     }
   }
 
+  void _navigateToRecordDetailScreen(ExerciseRecord record) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ExerciseRecordDetailScreen(record: record),
+      ),
+    );
+  }
+
   String _formatDate(String date) {
     DateTime parsedDate = DateTime.parse(date);
     return DateFormat('dd-MM-yyyy').format(parsedDate);
@@ -91,9 +101,9 @@ class _ExerciseRecordScreenState extends State<ExerciseRecordScreen> {
                   ListTile(
                     title: Text('Data: ${_formatDate(record.date)}'),
                     subtitle: Text(
-                        'Séries: ${record.series} | Peso: ${record.weight} kg'),
+                        record.observation != null ? 'Observação: ${record.observation}' : ''),
                     onTap: () {
-                      _navigateToAddRecordScreen(record: record);
+                      _navigateToRecordDetailScreen(record);
                     },
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
