@@ -4,6 +4,7 @@ import 'package:evolugym/models/exercise_record.dart';
 import 'package:evolugym/screens/add_exercise_record_screen.dart';
 import 'package:evolugym/services/exercise_record_service.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ExerciseRecordScreen extends StatefulWidget {
   final Exercise exercise;
@@ -57,6 +58,11 @@ class _ExerciseRecordScreenState extends State<ExerciseRecordScreen> {
     }
   }
 
+  String _formatDate(String date) {
+    DateTime parsedDate = DateTime.parse(date);
+    return DateFormat('dd-MM-yyyy').format(parsedDate);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,7 +89,7 @@ class _ExerciseRecordScreenState extends State<ExerciseRecordScreen> {
               return Column(
                 children: [
                   ListTile(
-                    title: Text('Data: ${record.date}'),
+                    title: Text('Data: ${_formatDate(record.date)}'),
                     subtitle: Text(
                         'Séries: ${record.series} | Peso: ${record.weight} kg'),
                     onTap: () {

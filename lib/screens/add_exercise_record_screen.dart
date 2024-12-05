@@ -3,6 +3,7 @@ import 'package:evolugym/models/exercise.dart';
 import 'package:evolugym/models/exercise_record.dart';
 import 'package:evolugym/services/exercise_record_service.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class AddExerciseRecordScreen extends StatefulWidget {
   final Exercise exercise;
@@ -23,6 +24,8 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
   late String _observation;
   late ExerciseRecordService _exerciseRecordService;
 
+  TextEditingController _dateController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -33,6 +36,34 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
       _series = widget.record!.series;
       _weight = widget.record!.weight;
       _observation = widget.record!.observation!;
+      _dateController.text = _formatDateForDisplay(_date);
+    } else {
+      _date = '';
+    }
+  }
+
+  String _formatDateForDisplay(String date) {
+    DateTime parsedDate = DateTime.parse(date);
+    return DateFormat('dd-MM-yyyy').format(parsedDate); 
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime initialDate = _date.isEmpty ? DateTime.now() : DateTime.parse(_date);
+    DateTime firstDate = DateTime(1800);
+    DateTime lastDate = DateTime.now();
+
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: firstDate,
+      lastDate: lastDate,
+    );
+
+    if (picked != null) {
+      setState(() {
+        _date = '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}';
+        _dateController.text = DateFormat('dd-MM-yyyy').format(picked);
+      });
     }
   }
 
@@ -86,9 +117,12 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
           child: Column(
             children: [
               TextFormField(
-                initialValue: widget.record?.date,
+                readOnly: true,
+                controller: _dateController,
                 decoration: const InputDecoration(labelText: 'Data'),
-                onSaved: (value) => _date = value!,
+                onTap: () {
+                  _selectDate(context);
+                },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Informe a data';
@@ -126,9 +160,21 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
                 onSaved: (value) => _observation = value!,
               ),
               const SizedBox(height: 20),
+              const Spacer(),
               ElevatedButton(
                 onPressed: _submitForm,
-                child: Text(widget.record == null ? 'Salvar Registro' : 'Salvar Alterações'),
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white, backgroundColor: const Color(0xFF24BE9A),
+                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  textStyle: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                child: Text(widget.record == null ? 'Adicionar' : 'Salvar'),
               ),
             ],
           ),
