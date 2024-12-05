@@ -6,7 +6,7 @@ import 'package:dio/dio.dart';
 class AddExerciseScreen extends StatefulWidget {
   final Exercise? exercise;
 
-  AddExerciseScreen({this.exercise});
+  const AddExerciseScreen({super.key, this.exercise});
 
   @override
   _AddExerciseScreenState createState() => _AddExerciseScreenState();
@@ -27,7 +27,11 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
 
     if (widget.exercise != null) {
       _nameController.text = widget.exercise!.name;
-      _selectedType = widget.exercise!.type;
+      if (_types.contains(widget.exercise!.type)) {
+        _selectedType = widget.exercise!.type;
+      } else {
+        _selectedType = null;
+      }
     }
   }
 
@@ -36,7 +40,7 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
   final type = _selectedType;
 
   if (name.isEmpty || type == null) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Preencha todos os campos')));
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Preencha todos os campos')));
     return;
   }
 
@@ -50,6 +54,7 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
         id: null,
         name: name,
         type: type,
+        records: [],
       );
       await _exerciseService.addExercise(newExercise);
     } else {
@@ -57,6 +62,7 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
         id: widget.exercise!.id,
         name: name,
         type: type,
+        records: widget.exercise!.records,
       );
       await _exerciseService.updateExercise(widget.exercise!.id!, updatedExercise);
     }
@@ -84,17 +90,17 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
           children: [
             TextField(
               controller: _nameController,
-              decoration: InputDecoration(labelText: 'Nome do Exercício'),
+              decoration: const InputDecoration(labelText: 'Nome do Exercício'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             InputDecorator(
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: "Tipo de Exercício",
                 border: OutlineInputBorder(),
               ),
               child: DropdownButton<String>(
                 value: _selectedType,
-                hint: Text("Selecione o Tipo de Exercício"),
+                hint: const Text("Selecione o Tipo de Exercício"),
                 onChanged: (String? newValue) {
                   setState(() {
                     _selectedType = newValue;
@@ -108,8 +114,8 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
                 }).toList(),
               ),
             ),
-            SizedBox(height: 20),
-            Spacer(),
+            const SizedBox(height: 20),
+            const Spacer(),
             Align(
               alignment: Alignment.center,
               child: ElevatedButton(
@@ -126,7 +132,7 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
                   ),
                 ),
                 child: _isSaving
-                    ? CircularProgressIndicator(color: Colors.white)
+                    ? const CircularProgressIndicator(color: Colors.white)
                     : Text(widget.exercise == null ? 'Adicionar' : 'Salvar'),
               ),
             ),

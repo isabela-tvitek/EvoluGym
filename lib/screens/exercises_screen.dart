@@ -3,9 +3,11 @@ import 'package:evolugym/models/exercise.dart';
 import 'package:evolugym/services/exercise_service.dart';
 import 'package:dio/dio.dart';
 import 'package:evolugym/screens/add_exercise_screen.dart';
-import 'package:evolugym/screens/exercise_detail_screen.dart';
+import 'package:evolugym/screens/exercise_record_screen.dart';
 
 class ExercisesScreen extends StatefulWidget {
+  const ExercisesScreen({super.key});
+
   @override
   _ExercisesScreenState createState() => _ExercisesScreenState();
 }
@@ -39,9 +41,9 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Exercícios')),
+      appBar: AppBar(title: const Text('Exercícios')),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
               itemCount: _exercises.length,
               itemBuilder: (context, index) {
@@ -53,7 +55,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ExerciseDetailScreen(exerciseId: exercise.id!),
+                        builder: (context) => ExerciseRecordScreen(exercise: exercise),
                       ),
                     );
                   },
@@ -61,7 +63,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.edit),
+                        icon: const Icon(Icons.edit),
                         color: Colors.green,
                         onPressed: () {
                           Navigator.push(
@@ -73,7 +75,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.delete),
+                        icon: const Icon(Icons.delete),
                         color: Colors.red,
                         onPressed: () async {
                           await _exerciseService.deleteExercise(exercise.id!);
@@ -94,7 +96,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
             MaterialPageRoute(builder: (context) => AddExerciseScreen()),
           ).then((_) => _loadExercises());
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

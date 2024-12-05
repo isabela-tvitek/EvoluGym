@@ -39,14 +39,4 @@ class ExerciseService {
       throw Exception('Erro ao deletar exercício: $e');
     }
   }
-
-  Future<Exercise> getExerciseById(int id) async {
-    try {
-      var _dio;
-      final response = await _dio.get('https://api.example.com/exercises/$id');
-      return Exercise.fromJson(response.data);
-    } catch (e) {
-      throw Exception('Erro ao carregar os detalhes do exercício: $e');
-    }
-  }
 }

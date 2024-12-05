@@ -13,7 +13,7 @@ void main() {
 class MyApp extends StatelessWidget {
   final Dio dio;
 
-  MyApp({required this.dio});
+  const MyApp({super.key, required this.dio});
 
   @override
   Widget build(BuildContext context) {
