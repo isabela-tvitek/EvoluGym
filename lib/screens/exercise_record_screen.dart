@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:evolugym/models/exercise.dart';
 import 'package:evolugym/models/exercise_record.dart';
 import 'package:evolugym/screens/add_exercise_record_screen.dart';
-import 'package:evolugym/screens/exercise_record_detail_screen.dart'; // Novo import
+import 'package:evolugym/screens/exercise_record_detail_screen.dart';
 import 'package:evolugym/services/exercise_record_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
