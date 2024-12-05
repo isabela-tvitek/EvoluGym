@@ -8,7 +8,7 @@ class ExerciseRecord {
   final int exerciseId;
   final String date;
   final int series;
-  final double weight;
+  final Map<String, double> weight;
   final String? observation;
 
   ExerciseRecord({

@@ -12,7 +12,9 @@ ExerciseRecord _$ExerciseRecordFromJson(Map<String, dynamic> json) =>
       exerciseId: (json['exerciseId'] as num).toInt(),
       date: json['date'] as String,
       series: (json['series'] as num).toInt(),
-      weight: (json['weight'] as num).toDouble(),
+      weight: (json['weight'] as Map<String, dynamic>).map(
+        (k, e) => MapEntry(k, (e as num).toDouble()),
+      ),
       observation: json['observation'] as String?,
     );
 

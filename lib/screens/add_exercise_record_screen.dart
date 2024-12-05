@@ -20,11 +20,14 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
   final _formKey = GlobalKey<FormState>();
   late String _date;
   late int _series;
-  late double _weight;
+  late Map<String, double> _weight;
   late String _observation;
   late ExerciseRecordService _exerciseRecordService;
 
   TextEditingController _dateController = TextEditingController();
+  TextEditingController _seriesController = TextEditingController();
+
+  bool _isSeriesReduced = false;
 
   @override
   void initState() {
@@ -37,14 +40,19 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
       _weight = widget.record!.weight;
       _observation = widget.record!.observation!;
       _dateController.text = _formatDateForDisplay(_date);
+      _seriesController.text = _series.toString();
     } else {
       _date = '';
+      _weight = {};
+      _series = 1;
+      _seriesController.text = '1';
+      _observation = '';
     }
   }
 
   String _formatDateForDisplay(String date) {
     DateTime parsedDate = DateTime.parse(date);
-    return DateFormat('dd-MM-yyyy').format(parsedDate); 
+    return DateFormat('dd-MM-yyyy').format(parsedDate);
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -65,6 +73,27 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
         _dateController.text = DateFormat('dd-MM-yyyy').format(picked);
       });
     }
+  }
+
+  void _updateWeightFields() {
+    setState(() {
+      int previousSeries = _series;
+      _series = int.parse(_seriesController.text);
+
+      _isSeriesReduced = _series < previousSeries;
+
+      if (_weight.length < _series) {
+        for (int i = _weight.length; i < _series; i++) {
+          _weight['S${i + 1}'] = 0.0;
+        }
+      } else if (_weight.length > _series) {
+        _weight.removeWhere((key, value) => int.parse(key.substring(1)) > _series);
+      }
+
+      if (_isSeriesReduced) {
+        _observation = '';
+      }
+    });
   }
 
   void _submitForm() {
@@ -90,8 +119,8 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
         });
       } else {
         _exerciseRecordService.editExerciseRecord(
-          widget.exercise.id!, 
-          widget.record!.id!, 
+          widget.exercise.id!,
+          widget.record!.id!,
           record,
         ).then((_) {
           Navigator.pop(context, true);
@@ -102,6 +131,31 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
         });
       }
     }
+  }
+
+  List<Widget> _buildWeightFields() {
+    List<Widget> weightFields = [];
+    for (int i = 1; i <= _series; i++) {
+      weightFields.add(
+        TextFormField(
+          initialValue: _weight['S$i']?.toString(),
+          decoration: InputDecoration(labelText: 'Peso S$i'),
+          keyboardType: TextInputType.numberWithOptions(decimal: true),
+          onSaved: (value) {
+            if (value != null && value.isNotEmpty) {
+              _weight['S$i'] = double.parse(value);
+            }
+          },
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Informe o peso para a série $i';
+            }
+            return null;
+          },
+        ),
+      );
+    }
+    return weightFields;
   }
 
   @override
@@ -131,10 +185,17 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
                 },
               ),
               TextFormField(
-                initialValue: widget.record?.series.toString(),
+                initialValue: widget.record?.observation,
+                decoration: const InputDecoration(labelText: 'Observação'),
+                onSaved: (value) => _observation = value!,
+              ),
+              TextFormField(
+                controller: _seriesController,
                 decoration: const InputDecoration(labelText: 'Séries'),
                 keyboardType: TextInputType.number,
-                onSaved: (value) => _series = int.parse(value!),
+                onChanged: (value) {
+                  _updateWeightFields();
+                },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Informe o número de séries';
@@ -142,23 +203,7 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
                   return null;
                 },
               ),
-              TextFormField(
-                initialValue: widget.record?.weight.toString(),
-                decoration: const InputDecoration(labelText: 'Peso (kg)'),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                onSaved: (value) => _weight = double.parse(value!),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Informe o peso';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                initialValue: widget.record?.observation,
-                decoration: const InputDecoration(labelText: 'Observação'),
-                onSaved: (value) => _observation = value!,
-              ),
+              ..._buildWeightFields(),
               const SizedBox(height: 20),
               const Spacer(),
               ElevatedButton(
