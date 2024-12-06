@@ -32,13 +32,15 @@ class _ExerciseRecordScreenState extends State<ExerciseRecordScreen> {
 
   Future<void> _deleteRecord(int recordId) async {
     try {
-      await _exerciseRecordService.deleteExerciseRecord(widget.exercise.id!, recordId);
+      await _exerciseRecordService.deleteExerciseRecord(
+          widget.exercise.id!, recordId);
       setState(() {
         _recordsFuture =
             _exerciseRecordService.getExerciseRecords(widget.exercise.id!);
       });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Erro ao excluir o registro')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Erro ao excluir o registro')));
     }
   }
 
@@ -48,7 +50,7 @@ class _ExerciseRecordScreenState extends State<ExerciseRecordScreen> {
       MaterialPageRoute(
         builder: (context) => AddExerciseRecordScreen(
           exercise: widget.exercise,
-          record: record, 
+          record: record,
         ),
       ),
     );
@@ -81,6 +83,8 @@ class _ExerciseRecordScreenState extends State<ExerciseRecordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:
+          Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text('Registros de ${widget.exercise.name}'),
         backgroundColor: const Color(0xFF24BE9A),
@@ -124,6 +128,9 @@ class _ExerciseRecordScreenState extends State<ExerciseRecordScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? const Color.fromARGB(255, 129, 126, 126)
+                    : Colors.white,
                 child: InkWell(
                   onTap: () {
                     _navigateToRecordDetailScreen(record);
@@ -145,10 +152,12 @@ class _ExerciseRecordScreenState extends State<ExerciseRecordScreen> {
                             children: [
                               Text(
                                 'Data: ${_formatDate(record.date)}',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.black87,
+                                  color: Theme.of(context).brightness == Brightness.dark
+                                      ? Colors.white
+                                      : Colors.black87,
                                 ),
                               ),
                               const SizedBox(height: 8),
@@ -158,7 +167,9 @@ class _ExerciseRecordScreenState extends State<ExerciseRecordScreen> {
                                     : 'Sem Observação',
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: Colors.grey[600],
+                                  color: Theme.of(context).brightness == Brightness.dark
+                                      ? Colors.white.withOpacity(0.7)
+                                      : Colors.grey[600],
                                 ),
                               ),
                             ],

@@ -26,10 +26,12 @@ class ExerciseRecordDetailScreen extends StatelessWidget {
     final pesoPorSerie = record.weight ?? {};
     final tempoPorSerie = record.time ?? {};
 
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Detalhes do Registro'),
-        backgroundColor: Colors.teal,
+        backgroundColor: theme.colorScheme.primary,
         actions: [
           Consumer<ThemeProvider>(
             builder: (context, themeProvider, child) {
@@ -53,75 +55,69 @@ class ExerciseRecordDetailScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
               decoration: BoxDecoration(
-                color: Colors.teal.shade50,
+                color: theme.colorScheme.primary.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 8,
-                    offset: const Offset(2, 4),
-                  ),
-                ],
               ),
               child: Text(
                 'Data: ${_formatDate(record.date)}',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Colors.teal,
+                  color: theme.colorScheme.primary,
                 ),
               ),
             ),
             const SizedBox(height: 16),
+
             const Text(
               'Observação:',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w500,
-                color: Colors.teal,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               record.observation ?? 'Sem observação',
-              style: TextStyle(
+              style: theme.textTheme.bodySmall?.copyWith(
                 fontSize: 16,
                 fontStyle: FontStyle.italic,
-                color: Colors.grey.shade600,
+                color: theme.textTheme.bodySmall?.color ?? Colors.grey.shade600,
               ),
             ),
             const SizedBox(height: 16),
+
             const Text(
               'Série:',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w500,
-                color: Colors.teal,
               ),
             ),
             const SizedBox(height: 8),
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.teal.shade100,
+                color: theme.colorScheme.primary.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
                 '${record.series}',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Colors.teal,
+                  color: theme.colorScheme.primary,
                 ),
               ),
             ),
             const SizedBox(height: 16),
+
             Text(
               isCardio ? 'Tempo por Série (s):' : 'Peso por Série (Kg):',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w500,
-                color: Colors.teal,
+                color: theme.colorScheme.primary,
               ),
             ),
             const SizedBox(height: 8),
@@ -133,34 +129,27 @@ class ExerciseRecordDetailScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(8),
                     margin: const EdgeInsets.only(bottom: 8),
                     decoration: BoxDecoration(
-                      color: Colors.teal.shade50,
+                      color: theme.colorScheme.primary.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 6,
-                          offset: const Offset(2, 4),
-                        ),
-                      ],
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           'S$i:',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Colors.teal,
+                            color: theme.colorScheme.primary,
                           ),
                         ),
                         Text(
                           isCardio
                               ? '${tempoPorSerie['S$i']?.toString() ?? '0'} s'
                               : '${pesoPorSerie['S$i']?.toStringAsFixed(1) ?? '0.0'} kg',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 16,
-                            color: Colors.teal,
+                            color: theme.colorScheme.primary,
                           ),
                         ),
                       ],
