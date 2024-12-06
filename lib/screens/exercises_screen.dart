@@ -43,6 +43,8 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF24BE9A),
@@ -79,6 +81,9 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     margin: const EdgeInsets.symmetric(vertical: 8),
+                    color: themeProvider.isDarkTheme
+                        ? const Color.fromARGB(255, 129, 126, 126)
+                        : Colors.white,
                     child: ListTile(
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
@@ -86,14 +91,21 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
                       ),
                       title: Text(
                         exercise.name,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
+                          color: themeProvider.isDarkTheme
+                              ? Colors.white
+                              : Colors.black87,
                         ),
                       ),
                       subtitle: Text(
                         exercise.type,
-                        style: TextStyle(color: Colors.grey[600]),
+                        style: TextStyle(
+                          color: themeProvider.isDarkTheme
+                              ? Colors.white70
+                              : Colors.grey[600],
+                        ),
                       ),
                       onTap: () {
                         Navigator.push(
@@ -124,7 +136,8 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
                             icon: const Icon(Icons.delete),
                             color: Colors.red,
                             onPressed: () async {
-                              await _exerciseService.deleteExercise(exercise.id!);
+                              await _exerciseService
+                                  .deleteExercise(exercise.id!);
                               _loadExercises();
                             },
                           ),
