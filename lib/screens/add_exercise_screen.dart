@@ -87,6 +87,8 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
     final theme = Theme.of(context);
     final inputDecoration = InputDecoration(
       labelText: "Nome do Exercício",
+      filled: true,
+      fillColor: Colors.white,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         borderSide: BorderSide(
@@ -139,7 +141,6 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-
               InputDecorator(
                 decoration: inputDecoration.copyWith(
                   labelText: 'Tipo de Exercício',
@@ -162,7 +163,6 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
                 ),
               ),
               const SizedBox(height: 180),
-
               Align(
                 alignment: Alignment.center,
                 child: ElevatedButton(
@@ -170,7 +170,8 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
                     backgroundColor: const Color(0xFF24BE9A),
-                    padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 50),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
