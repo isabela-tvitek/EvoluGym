@@ -1,35 +1,34 @@
+import 'package:evolugym/services/theme_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dio/dio.dart';
-import 'package:evolugym/services/exercise_service.dart';
 import 'package:evolugym/routes/app_routes.dart';
 
 void main() {
-  final dio = Dio();
-  
-  runApp(MyApp(dio: dio));
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => ThemeService(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  final Dio dio;
+  MyApp({super.key});
 
-  const MyApp({super.key, required this.dio});
+  final Dio dio = Dio();
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider(create: (_) => ExerciseService(dio)),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Evolugym',
-        theme: ThemeData(
-          primarySwatch: Colors.teal,
-        ),
-        onGenerateRoute: AppRoutes.generateRoute,
-        initialRoute: AppRoutes.homeRoute,
-      ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Evolugym',
+      theme: ThemeService.light,
+      darkTheme: ThemeService.dark,
+      themeMode:
+          Provider.of<ThemeService>(context).isDarkTheme ? ThemeMode.dark : ThemeMode.light,
+      onGenerateRoute: AppRoutes.generateRoute,
+      initialRoute: AppRoutes.homeRoute,
     );
   }
 }

@@ -1,9 +1,11 @@
+import 'package:evolugym/services/theme_service.dart';
 import 'package:flutter/material.dart';
 import 'package:evolugym/models/exercise.dart';
 import 'package:evolugym/services/exercise_service.dart';
 import 'package:dio/dio.dart';
 import 'package:evolugym/screens/add_exercise_screen.dart';
 import 'package:evolugym/screens/exercise_record_screen.dart';
+import 'package:provider/provider.dart';
 
 class ExercisesScreen extends StatefulWidget {
   const ExercisesScreen({super.key});
@@ -34,14 +36,34 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
       setState(() {
         _isLoading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro ao carregar exercícios: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao carregar exercícios: $e')));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Exercícios')),
+      appBar: AppBar(
+        title: Text(
+          'Exercícios',
+          style: const TextTheme().titleLarge,
+        ),
+        actions: [
+          Consumer<ThemeService>(
+            builder: (context, themeService, child) {
+              return IconButton(
+                onPressed: themeService.toggleTheme,
+                icon: Icon(
+                  themeService.isDarkTheme
+                      ? Icons.nightlight
+                      : Icons.light_mode,
+                ),
+              );
+            },
+          )
+        ],
+      ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
@@ -55,7 +77,8 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ExerciseRecordScreen(exercise: exercise),
+                        builder: (context) =>
+                            ExerciseRecordScreen(exercise: exercise),
                       ),
                     );
                   },
@@ -69,7 +92,8 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => AddExerciseScreen(exercise: exercise),
+                              builder: (context) =>
+                                  AddExerciseScreen(exercise: exercise),
                             ),
                           ).then((_) => _loadExercises());
                         },
