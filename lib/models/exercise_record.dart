@@ -8,7 +8,8 @@ class ExerciseRecord {
   final int exerciseId;
   final String date;
   final int series;
-  final Map<String, double> weight;
+  final Map<String, double>? weight;
+  final Map<String, int>? time;
   final String? observation;
 
   ExerciseRecord({
@@ -16,7 +17,8 @@ class ExerciseRecord {
     required this.exerciseId,
     required this.date,
     required this.series,
-    required this.weight,
+    this.weight,
+    this.time,
     this.observation,
   });
 

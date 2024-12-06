@@ -1,15 +1,19 @@
 import 'package:dio/dio.dart';
 import 'package:evolugym/models/exercise.dart';
 import 'package:evolugym/models/exercise_record.dart';
+import 'package:evolugym/provider/theme_provider.dart';
 import 'package:evolugym/services/exercise_record_service.dart';
+import 'package:evolugym/widgets/custom_timer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class AddExerciseRecordScreen extends StatefulWidget {
   final Exercise exercise;
   final ExerciseRecord? record;
 
-  const AddExerciseRecordScreen({super.key, required this.exercise, this.record});
+  const AddExerciseRecordScreen(
+      {super.key, required this.exercise, this.record});
 
   @override
   _AddExerciseRecordScreenState createState() =>
@@ -21,6 +25,7 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
   late String _date;
   late int _series;
   late Map<String, double> _weight;
+  late Map<String, int> _time;
   late String _observation;
   late ExerciseRecordService _exerciseRecordService;
 
@@ -28,6 +33,8 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
   TextEditingController _seriesController = TextEditingController();
 
   bool _isSeriesReduced = false;
+  bool _isTimerRunning = false;
+  int _elapsedTime = 0;
 
   @override
   void initState() {
@@ -37,12 +44,21 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
     if (widget.record != null) {
       _date = widget.record!.date;
       _series = widget.record!.series;
-      _weight = widget.record!.weight;
+
+      if (widget.exercise.type.toLowerCase() == 'cardio') {
+        _time = Map<String, int>.from(widget.record!.time!);
+        _weight = {};
+      } else {
+        _weight = Map<String, double>.from(widget.record!.weight!);
+        _time = {};
+      }
+
       _observation = widget.record!.observation!;
       _dateController.text = _formatDateForDisplay(_date);
       _seriesController.text = _series.toString();
     } else {
       _date = '';
+      _time = {};
       _weight = {};
       _series = 1;
       _seriesController.text = '1';
@@ -56,7 +72,8 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
   }
 
   Future<void> _selectDate(BuildContext context) async {
-    DateTime initialDate = _date.isEmpty ? DateTime.now() : DateTime.parse(_date);
+    DateTime initialDate =
+        _date.isEmpty ? DateTime.now() : DateTime.parse(_date);
     DateTime firstDate = DateTime(1800);
     DateTime lastDate = DateTime.now();
 
@@ -69,7 +86,8 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
 
     if (picked != null) {
       setState(() {
-        _date = '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}';
+        _date =
+            '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}';
         _dateController.text = DateFormat('dd-MM-yyyy').format(picked);
       });
     }
@@ -82,12 +100,24 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
 
       _isSeriesReduced = _series < previousSeries;
 
-      if (_weight.length < _series) {
-        for (int i = _weight.length; i < _series; i++) {
-          _weight['S${i + 1}'] = 0.0;
+      if (widget.exercise.type.toLowerCase() == 'cardio') {
+        if (_time.length < _series) {
+          for (int i = _time.length; i < _series; i++) {
+            _time['S${i + 1}'] = 0;
+          }
+        } else if (_time.length > _series) {
+          _time.removeWhere(
+              (key, value) => int.parse(key.substring(1)) > _series);
         }
-      } else if (_weight.length > _series) {
-        _weight.removeWhere((key, value) => int.parse(key.substring(1)) > _series);
+      } else {
+        if (_weight.length < _series) {
+          for (int i = _weight.length; i < _series; i++) {
+            _weight['S${i + 1}'] = 0.0;
+          }
+        } else if (_weight.length > _series) {
+          _weight.removeWhere(
+              (key, value) => int.parse(key.substring(1)) > _series);
+        }
       }
 
       if (_isSeriesReduced) {
@@ -105,123 +135,221 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
         exerciseId: widget.exercise.id!,
         date: _date,
         series: _series,
-        weight: _weight,
+        weight: widget.exercise.type.toLowerCase() == 'cardio'
+            ? _time.map((key, value) => MapEntry(key, value.toDouble()))
+            : _weight,
         observation: _observation,
+        time: widget.exercise.type.toLowerCase() == 'cardio' ? _time : {},
       );
 
       if (widget.record == null) {
         _exerciseRecordService.addExerciseRecord(record).then((_) {
           Navigator.pop(context, true);
         }).catchError((e) {
-          String errorMessage = 'Erro ao adicionar registro';
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(errorMessage)));
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Erro ao adicionar registro')));
         });
       } else {
-        _exerciseRecordService.editExerciseRecord(
+        _exerciseRecordService
+            .editExerciseRecord(
           widget.exercise.id!,
           widget.record!.id!,
           record,
-        ).then((_) {
+        )
+            .then((_) {
           Navigator.pop(context, true);
         }).catchError((e) {
-          String errorMessage = 'Erro ao editar registro';
           ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(errorMessage)));
+              .showSnackBar(SnackBar(content: Text('Erro ao editar registro')));
         });
       }
     }
   }
 
-  List<Widget> _buildWeightFields() {
-    List<Widget> weightFields = [];
+  List<Widget> _buildWeightOrTimeFields() {
+    List<Widget> fields = [];
     for (int i = 1; i <= _series; i++) {
-      weightFields.add(
-        TextFormField(
-          initialValue: _weight['S$i']?.toString(),
-          decoration: InputDecoration(labelText: 'Peso S$i'),
-          keyboardType: TextInputType.numberWithOptions(decimal: true),
-          onSaved: (value) {
-            if (value != null && value.isNotEmpty) {
-              _weight['S$i'] = double.parse(value);
-            }
-          },
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Informe o peso para a série $i';
-            }
-            return null;
-          },
-        ),
-      );
+      if (widget.exercise.type.toLowerCase() == 'cardio') {
+        fields.add(
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5.0),
+            child: TextFormField(
+              initialValue: _time['S$i']?.toString(),
+              decoration: InputDecoration(
+                labelText: 'Tempo S$i (segundos)',
+                labelStyle: TextStyle(color: Colors.grey[600]),
+                border: OutlineInputBorder(),
+                filled: true,
+                fillColor: Colors.grey[200],
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+              ),
+              keyboardType: TextInputType.number,
+              onSaved: (value) {
+                if (value != null && value.isNotEmpty) {
+                  _time['S$i'] = int.parse(value);
+                }
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Informe o tempo para a série $i';
+                }
+                return null;
+              },
+            ),
+          ),
+        );
+      } else {
+        fields.add(
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5.0),
+            child: TextFormField(
+              initialValue: _weight['S$i']?.toString(),
+              decoration: InputDecoration(
+                labelText: 'Peso S$i',
+                labelStyle: TextStyle(color: Colors.grey[600]),
+                border: OutlineInputBorder(),
+                filled: true,
+                fillColor: Colors.grey[200],
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+              ),
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              onSaved: (value) {
+                if (value != null && value.isNotEmpty) {
+                  _weight['S$i'] = double.parse(value);
+                }
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Informe o peso para a série $i';
+                }
+                return null;
+              },
+            ),
+          ),
+        );
+      }
     }
-    return weightFields;
+    return fields;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.record == null ? 'Adicionar Registro' : 'Editar Registro'),
+        title: Text(
+            widget.record == null ? 'Adicionar Registro' : 'Editar Registro'),
+        backgroundColor: Colors.teal,
+        actions: [
+          Consumer<ThemeProvider>(
+            builder: (context, themeProvider, child) {
+              return IconButton(
+                onPressed: themeProvider.toggleTheme,
+                icon: Icon(
+                  themeProvider.isDarkTheme
+                      ? Icons.nightlight_round
+                      : Icons.wb_sunny,
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                readOnly: true,
-                controller: _dateController,
-                decoration: const InputDecoration(labelText: 'Data'),
-                onTap: () {
-                  _selectDate(context);
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Informe a data';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                initialValue: widget.record?.observation,
-                decoration: const InputDecoration(labelText: 'Observação'),
-                onSaved: (value) => _observation = value!,
-              ),
-              TextFormField(
-                controller: _seriesController,
-                decoration: const InputDecoration(labelText: 'Séries'),
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  _updateWeightFields();
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Informe o número de séries';
-                  }
-                  return null;
-                },
-              ),
-              ..._buildWeightFields(),
-              const SizedBox(height: 20),
-              const Spacer(),
-              ElevatedButton(
-                onPressed: _submitForm,
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white, backgroundColor: const Color(0xFF24BE9A),
-                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TextFormField(
+                  readOnly: true,
+                  controller: _dateController,
+                  decoration: InputDecoration(
+                    labelText: 'Data',
+                    labelStyle: TextStyle(color: Colors.grey[600]),
+                    border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                   ),
-                  textStyle: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  onTap: () {
+                    _selectDate(context);
+                  },
                 ),
-                child: Text(widget.record == null ? 'Adicionar' : 'Salvar'),
-              ),
-            ],
+                const SizedBox(height: 15),
+                TextFormField(
+                  initialValue: _observation,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    labelText: 'Observação',
+                    labelStyle: TextStyle(color: Colors.grey[600]),
+                    border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                  ),
+                  onSaved: (value) {
+                    _observation = value ?? '';
+                  },
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: _seriesController,
+                  decoration: InputDecoration(
+                    labelText: 'Número de Séries',
+                    labelStyle: TextStyle(color: Colors.grey[600]),
+                    border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                  ),
+                  keyboardType: TextInputType.number,
+                  onSaved: (value) {
+                    _series = int.parse(value ?? '1');
+                  },
+                  onChanged: (value) {
+                    _updateWeightFields();
+                  },
+                ),
+                const SizedBox(height: 20),
+                Column(
+                  children: _buildWeightOrTimeFields(),
+                ),
+                const SizedBox(height: 20),
+                if (widget.exercise.type.toLowerCase() == 'cardio')
+                  CustomerTimerWidget(
+                    onTimeChanged: (time) {
+                      setState(() {
+                        _elapsedTime = time;
+                      });
+                    },
+                  ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _submitForm,
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.teal,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    textStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  child: Text(widget.record == null ? 'Adicionar' : 'Salvar'),
+                ),
+              ],
+            ),
           ),
         ),
       ),

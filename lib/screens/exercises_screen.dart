@@ -1,4 +1,4 @@
-import 'package:evolugym/services/theme_service.dart';
+import 'package:evolugym/provider/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:evolugym/models/exercise.dart';
 import 'package:evolugym/services/exercise_service.dart';
@@ -45,74 +45,97 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        backgroundColor: const Color(0xFF24BE9A),
+        title: const Text(
           'Exercícios',
-          style: const TextTheme().titleLarge,
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
         actions: [
-          Consumer<ThemeService>(
-            builder: (context, themeService, child) {
+          Consumer<ThemeProvider>(
+            builder: (context, themeProvider, child) {
               return IconButton(
-                onPressed: themeService.toggleTheme,
+                onPressed: themeProvider.toggleTheme,
                 icon: Icon(
-                  themeService.isDarkTheme
-                      ? Icons.nightlight
-                      : Icons.light_mode,
+                  themeProvider.isDarkTheme
+                      ? Icons.nightlight_round
+                      : Icons.wb_sunny,
                 ),
               );
             },
-          )
+          ),
         ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: _exercises.length,
-              itemBuilder: (context, index) {
-                final exercise = _exercises[index];
-                return ListTile(
-                  title: Text(exercise.name),
-                  subtitle: Text(exercise.type),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            ExerciseRecordScreen(exercise: exercise),
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ListView.builder(
+                itemCount: _exercises.length,
+                itemBuilder: (context, index) {
+                  final exercise = _exercises[index];
+                  return Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
                       ),
-                    );
-                  },
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit),
-                        color: Colors.green,
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  AddExerciseScreen(exercise: exercise),
-                            ),
-                          ).then((_) => _loadExercises());
-                        },
+                      title: Text(
+                        exercise.name,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.delete),
-                        color: Colors.red,
-                        onPressed: () async {
-                          await _exerciseService.deleteExercise(exercise.id!);
-                          _loadExercises();
-                        },
+                      subtitle: Text(
+                        exercise.type,
+                        style: TextStyle(color: Colors.grey[600]),
                       ),
-                    ],
-                  ),
-                );
-              },
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ExerciseRecordScreen(exercise: exercise),
+                          ),
+                        );
+                      },
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            color: Colors.green,
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      AddExerciseScreen(exercise: exercise),
+                                ),
+                              ).then((_) => _loadExercises());
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            color: Colors.red,
+                            onPressed: () async {
+                              await _exerciseService.deleteExercise(exercise.id!);
+                              _loadExercises();
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
       floatingActionButton: FloatingActionButton(
-        foregroundColor: Colors.white,
         backgroundColor: const Color(0xFF24BE9A),
         onPressed: () {
           Navigator.push(

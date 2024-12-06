@@ -1,11 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:evolugym/models/exercise.dart';
 import 'package:evolugym/models/exercise_record.dart';
+import 'package:evolugym/provider/theme_provider.dart';
 import 'package:evolugym/screens/add_exercise_record_screen.dart';
 import 'package:evolugym/screens/exercise_record_detail_screen.dart';
 import 'package:evolugym/services/exercise_record_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class ExerciseRecordScreen extends StatefulWidget {
   final Exercise exercise;
@@ -63,7 +65,10 @@ class _ExerciseRecordScreenState extends State<ExerciseRecordScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ExerciseRecordDetailScreen(record: record),
+        builder: (context) => ExerciseRecordDetailScreen(
+          record: record,
+          exercise: widget.exercise,
+        ),
       ),
     );
   }
@@ -78,6 +83,23 @@ class _ExerciseRecordScreenState extends State<ExerciseRecordScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Registros de ${widget.exercise.name}'),
+        backgroundColor: const Color(0xFF24BE9A),
+        elevation: 4,
+        centerTitle: true,
+        actions: [
+          Consumer<ThemeProvider>(
+            builder: (context, themeProvider, child) {
+              return IconButton(
+                onPressed: themeProvider.toggleTheme,
+                icon: Icon(
+                  themeProvider.isDarkTheme
+                      ? Icons.nightlight_round
+                      : Icons.wb_sunny,
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: FutureBuilder<List<ExerciseRecord>>(
         future: _recordsFuture,
@@ -96,18 +118,52 @@ class _ExerciseRecordScreenState extends State<ExerciseRecordScreen> {
             itemCount: records.length,
             itemBuilder: (context, index) {
               final record = records[index];
-              return Column(
-                children: [
-                  ListTile(
-                    title: Text('Data: ${_formatDate(record.date)}'),
-                    subtitle: Text(
-                        record.observation != null ? 'Observação: ${record.observation}' : ''),
-                    onTap: () {
-                      _navigateToRecordDetailScreen(record);
-                    },
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
+              return Card(
+                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: InkWell(
+                  onTap: () {
+                    _navigateToRecordDetailScreen(record);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const Icon(
+                          Icons.fitness_center,
+                          color: Color(0xFF24BE9A),
+                          size: 40,
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Data: ${_formatDate(record.date)}',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                record.observation != null
+                                    ? 'Observação: ${record.observation}'
+                                    : 'Sem Observação',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                         IconButton(
                           icon: const Icon(Icons.edit),
                           color: Colors.green,
@@ -125,17 +181,15 @@ class _ExerciseRecordScreenState extends State<ExerciseRecordScreen> {
                       ],
                     ),
                   ),
-                  const Divider(color: Colors.grey),
-                ],
+                ),
               );
             },
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
-        foregroundColor: Colors.white,
-        backgroundColor: const Color(0xFF24BE9A),
         onPressed: () => _navigateToAddRecordScreen(),
+        backgroundColor: Color(0xFF24BE9A),
         child: const Icon(Icons.add),
       ),
     );

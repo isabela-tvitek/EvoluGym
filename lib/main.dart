@@ -1,4 +1,4 @@
-import 'package:evolugym/services/theme_service.dart';
+import 'package:evolugym/provider/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dio/dio.dart';
@@ -7,7 +7,7 @@ import 'package:evolugym/routes/app_routes.dart';
 void main() {
   runApp(
     ChangeNotifierProvider(
-      create: (context) => ThemeService(),
+      create: (context) => ThemeProvider(),
       child: MyApp(),
     ),
   );
@@ -23,10 +23,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Evolugym',
-      theme: ThemeService.light,
-      darkTheme: ThemeService.dark,
-      themeMode:
-          Provider.of<ThemeService>(context).isDarkTheme ? ThemeMode.dark : ThemeMode.light,
+      theme: ThemeProvider.light,
+      darkTheme: ThemeProvider.dark,
+      themeMode: Provider.of<ThemeProvider>(context).isDarkTheme
+          ? ThemeMode.dark
+          : ThemeMode.light,
       onGenerateRoute: AppRoutes.generateRoute,
       initialRoute: AppRoutes.homeRoute,
     );
