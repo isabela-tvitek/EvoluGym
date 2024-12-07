@@ -153,7 +153,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AddExerciseScreen()),
+            MaterialPageRoute(builder: (context) => const AddExerciseScreen()),
           ).then((_) => _loadExercises());
         },
         child: const Icon(Icons.add),

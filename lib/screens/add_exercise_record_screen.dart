@@ -29,11 +29,11 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
   late String _observation;
   late ExerciseRecordService _exerciseRecordService;
 
-  TextEditingController _dateController = TextEditingController();
-  TextEditingController _seriesController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _seriesController = TextEditingController();
 
   bool _isSeriesReduced = false;
-  bool _isTimerRunning = false;
+  final bool _isTimerRunning = false;
   int _elapsedTime = 0;
 
   @override
@@ -147,7 +147,7 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
           Navigator.pop(context, true);
         }).catchError((e) {
           ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Erro ao adicionar registro')));
+              const SnackBar(content: Text('Erro ao adicionar registro')));
         });
       } else {
         _exerciseRecordService
@@ -160,7 +160,7 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
           Navigator.pop(context, true);
         }).catchError((e) {
           ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('Erro ao editar registro')));
+              .showSnackBar(const SnackBar(content: Text('Erro ao editar registro')));
         });
       }
     }
@@ -178,11 +178,11 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
               decoration: InputDecoration(
                 labelText: 'Tempo S$i (segundos)',
                 labelStyle: TextStyle(color: Colors.grey[600]),
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
                 filled: true,
                 fillColor: Colors.grey[200],
                 contentPadding:
-                    EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
               ),
               keyboardType: TextInputType.number,
               onSaved: (value) {
@@ -208,13 +208,13 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
               decoration: InputDecoration(
                 labelText: 'Peso S$i',
                 labelStyle: TextStyle(color: Colors.grey[600]),
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
                 filled: true,
                 fillColor: Colors.grey[200],
                 contentPadding:
-                    EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
               ),
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
               onSaved: (value) {
                 if (value != null && value.isNotEmpty) {
                   _weight['S$i'] = double.parse(value);
@@ -270,11 +270,11 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
                   decoration: InputDecoration(
                     labelText: 'Data',
                     labelStyle: TextStyle(color: Colors.grey[600]),
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     filled: true,
                     fillColor: Colors.grey[200],
                     contentPadding:
-                        EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                        const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                   ),
                   onTap: () {
                     _selectDate(context);
@@ -287,11 +287,11 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
                   decoration: InputDecoration(
                     labelText: 'Observação',
                     labelStyle: TextStyle(color: Colors.grey[600]),
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     filled: true,
                     fillColor: Colors.grey[200],
                     contentPadding:
-                        EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                        const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                   ),
                   onSaved: (value) {
                     _observation = value ?? '';
@@ -303,11 +303,11 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
                   decoration: InputDecoration(
                     labelText: 'Número de Séries',
                     labelStyle: TextStyle(color: Colors.grey[600]),
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     filled: true,
                     fillColor: Colors.grey[200],
                     contentPadding:
-                        EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                        const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                   ),
                   keyboardType: TextInputType.number,
                   onSaved: (value) {

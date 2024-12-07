@@ -19,9 +19,9 @@ class AppRoutes {
       case homeRoute:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
       case exercisesRoute:
-        return MaterialPageRoute(builder: (_) => ExercisesScreen());
+        return MaterialPageRoute(builder: (_) => const ExercisesScreen());
       case addExerciseRoute:
-        return MaterialPageRoute(builder: (_) => AddExerciseScreen());
+        return MaterialPageRoute(builder: (_) => const AddExerciseScreen());
       case exerciseRecordRoute:
         final Exercise exercise = settings.arguments as Exercise;
         return MaterialPageRoute(

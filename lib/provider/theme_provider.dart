@@ -31,7 +31,7 @@ class ThemeProvider extends ChangeNotifier {
   static ThemeData dark = ThemeData(
     scaffoldBackgroundColor: const Color.fromARGB(255, 84, 84, 84),
     primaryColor: primaryGreen,
-    colorScheme: ColorScheme.dark(
+    colorScheme: const ColorScheme.dark(
       primary: primaryGreen,
       secondary: primaryGreen,
     ),

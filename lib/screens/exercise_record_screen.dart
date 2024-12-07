@@ -200,7 +200,7 @@ class _ExerciseRecordScreenState extends State<ExerciseRecordScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _navigateToAddRecordScreen(),
-        backgroundColor: Color(0xFF24BE9A),
+        backgroundColor: const Color(0xFF24BE9A),
         child: const Icon(Icons.add),
       ),
     );

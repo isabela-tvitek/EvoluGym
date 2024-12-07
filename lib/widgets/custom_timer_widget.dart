@@ -63,7 +63,7 @@ class _CustomerTimerWidgetState extends State<CustomerTimerWidget> {
               Flexible(
                 child: Text(
                   _formatTime(_seconds),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 48,
                     fontWeight: FontWeight.bold,
                     color: Colors.teal,
