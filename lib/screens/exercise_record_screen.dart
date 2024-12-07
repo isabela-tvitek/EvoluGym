@@ -151,6 +151,12 @@ class _ExerciseRecordScreenState extends State<ExerciseRecordScreen> {
 
           final records = snapshot.data!;
 
+          records.sort((a, b) {
+            DateTime dateA = DateTime.parse(a.date);
+            DateTime dateB = DateTime.parse(b.date);
+            return dateB.compareTo(dateA);
+          });
+
           return ListView.builder(
             itemCount: records.length,
             itemBuilder: (context, index) {
