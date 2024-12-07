@@ -41,16 +41,48 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
     }
   }
 
+  Future<bool> _showDeleteConfirmationDialog() async {
+    return await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Confirmar exclusão'),
+              content: const Text(
+                  'Você tem certeza de que deseja excluir este exercício?'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                  child: const Text('Cancelar'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                  child: const Text('Excluir'),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF24BE9A),
+        backgroundColor: theme.appBarTheme.backgroundColor,
         title: const Text(
           'Exercícios',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         actions: [
           Consumer<ThemeProvider>(
@@ -136,9 +168,13 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
                             icon: const Icon(Icons.delete),
                             color: Colors.red,
                             onPressed: () async {
-                              await _exerciseService
-                                  .deleteExercise(exercise.id!);
-                              _loadExercises();
+                              final shouldDelete =
+                                  await _showDeleteConfirmationDialog();
+                              if (shouldDelete) {
+                                await _exerciseService
+                                    .deleteExercise(exercise.id!);
+                                _loadExercises();
+                              }
                             },
                           ),
                         ],
@@ -149,7 +185,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
               ),
             ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF24BE9A),
+        backgroundColor: theme.colorScheme.primary,
         onPressed: () {
           Navigator.push(
             context,

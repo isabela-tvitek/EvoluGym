@@ -90,7 +90,10 @@ class _CustomerTimerWidgetState extends State<CustomerTimerWidget> {
                   ),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 10,
+                  ),
                   child: Icon(
                     _isRunning ? Icons.stop : Icons.play_arrow,
                     size: 30,

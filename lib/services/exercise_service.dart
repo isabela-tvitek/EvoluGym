@@ -24,7 +24,10 @@ class ExerciseService {
     }
   }
 
-  Future<void> updateExercise(int id, Exercise exercise) async {
+  Future<void> updateExercise(
+    int id,
+    Exercise exercise,
+  ) async {
     try {
       await _apiService.editExercise(id, exercise);
     } catch (e) {

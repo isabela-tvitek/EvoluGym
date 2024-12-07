@@ -33,8 +33,6 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
   final TextEditingController _seriesController = TextEditingController();
 
   bool _isSeriesReduced = false;
-  final bool _isTimerRunning = false;
-  int _elapsedTime = 0;
 
   @override
   void initState() {
@@ -159,14 +157,16 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
             .then((_) {
           Navigator.pop(context, true);
         }).catchError((e) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(const SnackBar(content: Text('Erro ao editar registro')));
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Erro ao editar registro')));
         });
       }
     }
   }
 
   List<Widget> _buildWeightOrTimeFields() {
+    final theme = Theme.of(context);
+
     List<Widget> fields = [];
     for (int i = 1; i <= _series; i++) {
       if (widget.exercise.type.toLowerCase() == 'cardio') {
@@ -180,9 +180,11 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
                 labelStyle: TextStyle(color: Colors.grey[600]),
                 border: const OutlineInputBorder(),
                 filled: true,
-                fillColor: Colors.grey[200],
-                contentPadding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                fillColor: theme.scaffoldBackgroundColor,
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 15,
+                ),
               ),
               keyboardType: TextInputType.number,
               onSaved: (value) {
@@ -210,11 +212,14 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
                 labelStyle: TextStyle(color: Colors.grey[600]),
                 border: const OutlineInputBorder(),
                 filled: true,
-                fillColor: Colors.grey[200],
-                contentPadding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                fillColor: theme.scaffoldBackgroundColor,
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 15,
+                ),
               ),
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
               onSaved: (value) {
                 if (value != null && value.isNotEmpty) {
                   _weight['S$i'] = double.parse(value);
@@ -236,11 +241,14 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            widget.record == null ? 'Adicionar Registro' : 'Editar Registro'),
-        backgroundColor: Colors.teal,
+          widget.record == null ? 'Adicionar Registro' : 'Editar Registro',
+          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: theme.appBarTheme.backgroundColor,
         actions: [
           Consumer<ThemeProvider>(
             builder: (context, themeProvider, child) {
@@ -272,9 +280,11 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
                     labelStyle: TextStyle(color: Colors.grey[600]),
                     border: const OutlineInputBorder(),
                     filled: true,
-                    fillColor: Colors.grey[200],
-                    contentPadding:
-                        const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                    fillColor: theme.scaffoldBackgroundColor,
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 15,
+                    ),
                   ),
                   onTap: () {
                     _selectDate(context);
@@ -289,9 +299,11 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
                     labelStyle: TextStyle(color: Colors.grey[600]),
                     border: const OutlineInputBorder(),
                     filled: true,
-                    fillColor: Colors.grey[200],
-                    contentPadding:
-                        const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                    fillColor: theme.scaffoldBackgroundColor,
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 15,
+                    ),
                   ),
                   onSaved: (value) {
                     _observation = value ?? '';
@@ -305,9 +317,11 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
                     labelStyle: TextStyle(color: Colors.grey[600]),
                     border: const OutlineInputBorder(),
                     filled: true,
-                    fillColor: Colors.grey[200],
-                    contentPadding:
-                        const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                    fillColor: theme.scaffoldBackgroundColor,
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 15,
+                    ),
                   ),
                   keyboardType: TextInputType.number,
                   onSaved: (value) {
@@ -325,9 +339,7 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
                 if (widget.exercise.type.toLowerCase() == 'cardio')
                   CustomerTimerWidget(
                     onTimeChanged: (time) {
-                      setState(() {
-                        _elapsedTime = time;
-                      });
+                      setState(() {});
                     },
                   ),
                 const SizedBox(height: 20),
@@ -337,7 +349,9 @@ class _AddExerciseRecordScreenState extends State<AddExerciseRecordScreen> {
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.teal,
                     padding: const EdgeInsets.symmetric(
-                        vertical: 15, horizontal: 50),
+                      vertical: 15,
+                      horizontal: 50,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),

@@ -31,17 +31,48 @@ class _ExerciseRecordScreenState extends State<ExerciseRecordScreen> {
   }
 
   Future<void> _deleteRecord(int recordId) async {
-    try {
-      await _exerciseRecordService.deleteExerciseRecord(
-          widget.exercise.id!, recordId);
-      setState(() {
-        _recordsFuture =
-            _exerciseRecordService.getExerciseRecords(widget.exercise.id!);
-      });
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Erro ao excluir o registro')));
+    final shouldDelete = await _showDeleteConfirmationDialog();
+    if (shouldDelete) {
+      try {
+        await _exerciseRecordService.deleteExerciseRecord(
+            widget.exercise.id!, recordId);
+        setState(() {
+          _recordsFuture =
+              _exerciseRecordService.getExerciseRecords(widget.exercise.id!);
+        });
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Erro ao excluir o registro')));
+      }
     }
+  }
+
+  Future<bool> _showDeleteConfirmationDialog() async {
+    return await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Confirmar exclusão'),
+              content: const Text(
+                  'Você tem certeza de que deseja excluir este registro?'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                  child: const Text('Cancelar'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                  child: const Text('Excluir'),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
   }
 
   void _navigateToAddRecordScreen({ExerciseRecord? record}) async {
@@ -82,14 +113,19 @@ class _ExerciseRecordScreenState extends State<ExerciseRecordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor:
-          Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text('Registros de ${widget.exercise.name}'),
-        backgroundColor: const Color(0xFF24BE9A),
+        title: Text(
+          'Registros de ${widget.exercise.name}',
+          style: const TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: theme.appBarTheme.backgroundColor,
         elevation: 4,
-        centerTitle: true,
         actions: [
           Consumer<ThemeProvider>(
             builder: (context, themeProvider, child) {
@@ -123,7 +159,10 @@ class _ExerciseRecordScreenState extends State<ExerciseRecordScreen> {
             itemBuilder: (context, index) {
               final record = records[index];
               return Card(
-                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                margin: const EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 16,
+                ),
                 elevation: 5,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
@@ -155,7 +194,8 @@ class _ExerciseRecordScreenState extends State<ExerciseRecordScreen> {
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).brightness == Brightness.dark
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.dark
                                       ? Colors.white
                                       : Colors.black87,
                                 ),
@@ -167,7 +207,8 @@ class _ExerciseRecordScreenState extends State<ExerciseRecordScreen> {
                                     : 'Sem Observação',
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: Theme.of(context).brightness == Brightness.dark
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.dark
                                       ? Colors.white.withOpacity(0.7)
                                       : Colors.grey[600],
                                 ),
@@ -200,7 +241,7 @@ class _ExerciseRecordScreenState extends State<ExerciseRecordScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _navigateToAddRecordScreen(),
-        backgroundColor: const Color(0xFF24BE9A),
+        backgroundColor: theme.colorScheme.primary,
         child: const Icon(Icons.add),
       ),
     );

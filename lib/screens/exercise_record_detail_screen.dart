@@ -30,8 +30,14 @@ class ExerciseRecordDetailScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detalhes do Registro'),
-        backgroundColor: theme.colorScheme.primary,
+        title: const Text(
+          'Detalhes do Registro',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: theme.appBarTheme.backgroundColor,
         actions: [
           Consumer<ThemeProvider>(
             builder: (context, themeProvider, child) {
@@ -53,7 +59,10 @@ class ExerciseRecordDetailScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              padding: const EdgeInsets.symmetric(
+                vertical: 12,
+                horizontal: 16,
+              ),
               decoration: BoxDecoration(
                 color: theme.colorScheme.primary.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12),
@@ -68,7 +77,6 @@ class ExerciseRecordDetailScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-
             const Text(
               'Observação:',
               style: TextStyle(
@@ -86,7 +94,6 @@ class ExerciseRecordDetailScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-
             const Text(
               'Série:',
               style: TextStyle(
@@ -111,7 +118,6 @@ class ExerciseRecordDetailScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-
             Text(
               isCardio ? 'Tempo por Série (s):' : 'Peso por Série (Kg):',
               style: TextStyle(

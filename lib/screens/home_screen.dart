@@ -6,8 +6,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    
+    final theme = Theme.of(context);
     return SafeArea(
       child: Scaffold(
         body: Center(
@@ -17,21 +16,35 @@ class HomeScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Image.asset('lib/assets/images/logo.png',
+                Image.asset(
+                  'lib/assets/images/logo.png',
                   height: 200,
                   width: 200,
-                  errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-                    return const Icon(Icons.error, size: 100, color: Colors.red);
+                  errorBuilder: (
+                    BuildContext context,
+                    Object error,
+                    StackTrace? stackTrace,
+                  ) {
+                    return const Icon(
+                      Icons.error,
+                      size: 100,
+                      color: Colors.red,
+                    );
                   },
                 ),
                 const SizedBox(height: 120),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, AppRoutes.exercisesRoute);
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.exercisesRoute,
+                    );
                   },
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: const Color(0xFF24BE9A),
-                    padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 50),
+                    foregroundColor: Colors.white,
+                    backgroundColor: theme.colorScheme.primary,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),

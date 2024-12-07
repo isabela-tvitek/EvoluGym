@@ -9,16 +9,16 @@ class ThemeProvider extends ChangeNotifier {
   }
 
   static const Color primaryGreen = Color(0xFF24BE9A);
+  static const Color primaryGreenDark = Color.fromARGB(255, 40, 139, 116);
 
   static ThemeData light = ThemeData(
-    scaffoldBackgroundColor: const Color.fromARGB(255, 224, 224, 219), // fundo claro
+    scaffoldBackgroundColor: const Color.fromARGB(255, 224, 224, 219),
     primaryColor: primaryGreen,
     colorScheme: const ColorScheme.light(
-      primary: primaryGreen, 
-      secondary: primaryGreen,
+      primary: primaryGreen,
     ),
     appBarTheme: const AppBarTheme(
-      backgroundColor: Color.fromARGB(255, 224, 224, 219),
+      backgroundColor: primaryGreen,
       elevation: 0,
     ),
     textTheme: TextTheme(
@@ -30,13 +30,12 @@ class ThemeProvider extends ChangeNotifier {
 
   static ThemeData dark = ThemeData(
     scaffoldBackgroundColor: const Color.fromARGB(255, 84, 84, 84),
-    primaryColor: primaryGreen,
+    primaryColor: primaryGreenDark,
     colorScheme: const ColorScheme.dark(
-      primary: primaryGreen,
-      secondary: primaryGreen,
+      primary: primaryGreenDark,
     ),
     appBarTheme: const AppBarTheme(
-      backgroundColor: Color.fromARGB(255, 84, 84, 84),
+      backgroundColor: primaryGreenDark,
       elevation: 0,
     ),
     textTheme: TextTheme(

@@ -24,7 +24,11 @@ class ExerciseRecordService {
     }
   }
 
-  Future<void> editExerciseRecord(int exerciseId, int recordId, ExerciseRecord record) async {
+  Future<void> editExerciseRecord(
+    int exerciseId,
+    int recordId,
+    ExerciseRecord record,
+  ) async {
     try {
       await _apiService.editExerciseRecord(exerciseId, recordId, record);
     } catch (e) {
@@ -32,7 +36,10 @@ class ExerciseRecordService {
     }
   }
 
-  Future<void> deleteExerciseRecord(int exerciseId, int recordId) async {
+  Future<void> deleteExerciseRecord(
+    int exerciseId,
+    int recordId,
+  ) async {
     try {
       await _apiService.deleteExerciseRecord(exerciseId, recordId);
     } catch (e) {

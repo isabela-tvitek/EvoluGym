@@ -21,7 +21,12 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
 
   final ExerciseService _exerciseService = ExerciseService(Dio());
 
-  final List<String> _types = ["Inferiores", "Superiores", "Abdômen", "Cardio"];
+  final List<String> _types = [
+    "Inferiores",
+    "Superiores",
+    "Abdômen",
+    "Cardio",
+  ];
 
   @override
   void initState() {
@@ -88,7 +93,7 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
     final inputDecoration = InputDecoration(
       labelText: "Nome do Exercício",
       filled: true,
-      fillColor: Colors.white,
+      fillColor: theme.scaffoldBackgroundColor,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         borderSide: BorderSide(
@@ -103,15 +108,21 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
           width: 2,
         ),
       ),
-      contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+      contentPadding: const EdgeInsets.symmetric(
+        vertical: 10,
+        horizontal: 15,
+      ),
     );
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF24BE9A),
+        backgroundColor: theme.appBarTheme.backgroundColor,
         title: Text(
           widget.exercise == null ? 'Adicionar Exercício' : 'Editar Exercício',
-          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         actions: [
           Consumer<ThemeProvider>(
@@ -138,6 +149,9 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
                 controller: _nameController,
                 decoration: inputDecoration.copyWith(
                   labelText: 'Nome do Exercício',
+                  labelStyle: TextStyle(
+                    color: theme.textTheme.bodyMedium?.color,
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -147,7 +161,12 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
                 ),
                 child: DropdownButton<String>(
                   value: _selectedType,
-                  hint: const Text("Selecione o Tipo de Exercício"),
+                  hint: Text(
+                    "Selecione o Tipo de Exercício",
+                    style: TextStyle(
+                      color: theme.textTheme.bodyMedium?.color,
+                    ),
+                  ),
                   onChanged: (String? newValue) {
                     setState(() {
                       _selectedType = newValue;
@@ -157,7 +176,12 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
                   items: _types.map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
-                      child: Text(value),
+                      child: Text(
+                        value,
+                        style: TextStyle(
+                          color: theme.textTheme.bodyMedium?.color,
+                        ),
+                      ),
                     );
                   }).toList(),
                 ),
@@ -169,9 +193,11 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
                   onPressed: _isSaving ? null : _saveExercise,
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
-                    backgroundColor: const Color(0xFF24BE9A),
+                    backgroundColor: theme.primaryColor,
                     padding: const EdgeInsets.symmetric(
-                        vertical: 15, horizontal: 50),
+                      vertical: 15,
+                      horizontal: 50,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
