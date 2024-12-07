@@ -2,12 +2,11 @@ import 'package:dio/dio.dart';
 import 'package:evolugym/models/exercise.dart';
 import 'package:evolugym/models/exercise_record.dart';
 import 'package:evolugym/provider/theme_provider.dart';
-import 'package:evolugym/screens/add_exercise_record_screen.dart';
-import 'package:evolugym/screens/exercise_record_detail_screen.dart';
 import 'package:evolugym/services/exercise_record_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:evolugym/routes/app_routes.dart';
 
 class ExerciseRecordScreen extends StatefulWidget {
   final Exercise exercise;
@@ -76,17 +75,16 @@ class _ExerciseRecordScreenState extends State<ExerciseRecordScreen> {
   }
 
   void _navigateToAddRecordScreen({ExerciseRecord? record}) async {
-    final result = await Navigator.push(
+    final result = await Navigator.pushNamed(
       context,
-      MaterialPageRoute(
-        builder: (context) => AddExerciseRecordScreen(
-          exercise: widget.exercise,
-          record: record,
-        ),
-      ),
+      AppRoutes.addExerciseRecordRoute,
+      arguments: {
+        'exercise': widget.exercise,
+        'record': record,
+      },
     );
 
-    if (result != null && result) {
+    if (result != false) {
       setState(() {
         _recordsFuture =
             _exerciseRecordService.getExerciseRecords(widget.exercise.id!);
@@ -95,14 +93,13 @@ class _ExerciseRecordScreenState extends State<ExerciseRecordScreen> {
   }
 
   void _navigateToRecordDetailScreen(ExerciseRecord record) {
-    Navigator.push(
+    Navigator.pushNamed(
       context,
-      MaterialPageRoute(
-        builder: (context) => ExerciseRecordDetailScreen(
-          record: record,
-          exercise: widget.exercise,
-        ),
-      ),
+      AppRoutes.exerciseRecordDetailRoute,
+      arguments: {
+        'record': record,
+        'exercise': widget.exercise,
+      },
     );
   }
 

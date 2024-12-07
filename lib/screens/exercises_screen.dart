@@ -1,11 +1,10 @@
-import 'package:evolugym/provider/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:evolugym/models/exercise.dart';
 import 'package:evolugym/services/exercise_service.dart';
-import 'package:dio/dio.dart';
-import 'package:evolugym/screens/add_exercise_screen.dart';
-import 'package:evolugym/screens/exercise_record_screen.dart';
+import 'package:evolugym/routes/app_routes.dart';
 import 'package:provider/provider.dart';
+import 'package:evolugym/provider/theme_provider.dart';
+import 'package:dio/dio.dart';
 
 class ExercisesScreen extends StatefulWidget {
   const ExercisesScreen({super.key});
@@ -140,12 +139,10 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
                         ),
                       ),
                       onTap: () {
-                        Navigator.push(
+                        Navigator.pushNamed(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ExerciseRecordScreen(exercise: exercise),
-                          ),
+                          AppRoutes.exerciseRecordRoute,
+                          arguments: exercise,
                         );
                       },
                       trailing: Row(
@@ -155,12 +152,10 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
                             icon: const Icon(Icons.edit),
                             color: Colors.green,
                             onPressed: () {
-                              Navigator.push(
+                              Navigator.pushNamed(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      AddExerciseScreen(exercise: exercise),
-                                ),
+                                AppRoutes.addExerciseRoute,
+                                arguments: exercise,
                               ).then((_) => _loadExercises());
                             },
                           ),
@@ -187,9 +182,9 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: theme.colorScheme.primary,
         onPressed: () {
-          Navigator.push(
+          Navigator.pushNamed(
             context,
-            MaterialPageRoute(builder: (context) => const AddExerciseScreen()),
+            AppRoutes.addExerciseRoute,
           ).then((_) => _loadExercises());
         },
         child: const Icon(Icons.add),
