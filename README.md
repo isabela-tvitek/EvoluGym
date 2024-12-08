@@ -1,16 +1,30 @@
-# evolugym
+# **Evolugym** 🏋️‍♂️
 
-A new Flutter project.
+Evolugym é uma aplicação de gerenciamento de treinos e exercícios físicos desenvolvida em Flutter. O objetivo é proporcionar aos usuários uma experiência simples e eficiente para monitorar, adicionar e acompanhar seus exercícios.
 
-## Getting Started
+## **📋 Funcionalidades**
 
-This project is a starting point for a Flutter application.
+- **Gerenciamento de Exercícios**: Adicione, edite e exclua exercícios.
+- **Registros de Progresso**: Acompanhe o histórico de desempenho de cada exercício.
+- **Temas Personalizáveis**: Alterne entre modo claro e escuro.
+- **Interface Responsiva**: Totalmente adaptado para diferentes dispositivos.
+- **Integração com Backend**: Comunicação eficiente com APIs usando o `Dio`.
 
-A few resources to get you started if this is your first Flutter project:
+---
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## **📦 Instalação**
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. **Clone o repositório**:
+   ```bash
+   git clone https://github.com/seu-usuario/evolugym.git
+   cd evolugym
+---
+
+## **🎨 Design e Usabilidade**
+
+O design do Evolugym foi criado com foco na simplicidade e na eficiência. Ele conta com uma interface limpa e intuitiva que facilita a navegação do usuário.
+
+### **Vídeo Demostrativo:**
+![Home Screen](https://via.placeholder.com/600x300?text=Home+Screen)
+
+---

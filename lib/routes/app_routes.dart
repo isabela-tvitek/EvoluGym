@@ -22,8 +22,11 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const HomeScreen());
       case exercisesRoute:
         return MaterialPageRoute(builder: (_) => const ExercisesScreen());
-      case addExerciseRoute:
-        return MaterialPageRoute(builder: (_) => const AddExerciseScreen());
+      case AppRoutes.addExerciseRoute:
+        final Exercise? exercise = settings.arguments as Exercise?;
+        return MaterialPageRoute(
+          builder: (_) => AddExerciseScreen(exercise: exercise),
+        );
       case exerciseRecordRoute:
         final Exercise exercise = settings.arguments as Exercise;
         return MaterialPageRoute(
@@ -44,7 +47,8 @@ class AppRoutes {
         final record = arguments['record'] as ExerciseRecord;
         final exercise = arguments['exercise'] as Exercise;
         return MaterialPageRoute(
-          builder: (_) => ExerciseRecordDetailScreen(record: record, exercise: exercise),
+          builder: (_) =>
+              ExerciseRecordDetailScreen(record: record, exercise: exercise),
         );
       default:
         return MaterialPageRoute(builder: (_) {
