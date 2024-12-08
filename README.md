@@ -44,7 +44,7 @@ O design do Evolugym foi criado com foco na simplicidade e na eficiência. Ele c
 
 ### Links:
 
-- **Repositório da API**: [Link para o GitHub]([https://github.com/seu-usuario/seu-repositorio](https://github.com/isabela-tvitek/evolugym-api))
-- **Vídeo demonstrativo**: [Link para o vídeo no YouTube](https://youtu.be/seu-video)
+- **Repositório da API**: https://github.com/isabela-tvitek/evolugym-api
+- **Vídeo demonstrativo**: https://youtu.be/seu-video
 
 ---
