@@ -19,5 +19,11 @@ class Exercise {
 
   factory Exercise.fromJson(Map<String, dynamic> json) => _$ExerciseFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ExerciseToJson(this);
+  @override
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'type': type,
+        'records': records.map((record) => record.toJson()).toList(),
+      };
 }
