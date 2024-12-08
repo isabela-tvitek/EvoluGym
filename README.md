@@ -7,8 +7,6 @@ Evolugym é uma aplicação de gerenciamento de treinos e exercícios físicos d
 - **Gerenciamento de Exercícios**: Adicione, edite e exclua exercícios.
 - **Registros de Progresso**: Acompanhe o histórico de desempenho de cada exercício.
 - **Temas Personalizáveis**: Alterne entre modo claro e escuro.
-- **Interface Responsiva**: Totalmente adaptado para diferentes dispositivos.
-- **Integração com Backend**: Comunicação eficiente com APIs usando o `Dio`.
 
 ---
 
