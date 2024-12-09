@@ -40,11 +40,14 @@ Evolugym é uma aplicação de gerenciamento de treinos e exercícios físicos d
 O design do Evolugym foi criado com foco na simplicidade e na eficiência. Ele conta com uma interface limpa e intuitiva que facilita a navegação do usuário.
 
 ### **Vídeo Demostrativo:**
-![Home Screen](https://via.placeholder.com/600x300?text=Home+Screen)
+
+
+https://github.com/user-attachments/assets/88f23715-d9f3-4dab-b5f4-ef85c01853dd
+
+
 
 ### Links:
 
 - **Repositório da API**: https://github.com/isabela-tvitek/evolugym-api
-- **Vídeo demonstrativo**: https://youtu.be/seu-video
 
 ---
